@@ -1,0 +1,345 @@
+import java.util.*;
+import java.text.ParseException; 
+
+class Transportservicebook3
+{ 
+    int seats[];
+    int totalBookings;
+
+    Transportservicebook3(int seats)
+    {
+        this.seats=new int[seats];
+    }
+
+    public void book_fcfs(int n, int p[], int process[], String name[], int burst_time[], int arrival_time[], int allot[], Scanner sc)
+    {
+        int l=0;
+        while(l<n)
+        {
+        	Transportservicebook3.Status_display(allot,n);
+        	
+            System.out.println("𝗘𝗡𝗧𝗘𝗥 𝗧𝗛𝗘 𝗡𝗔𝗠𝗘 𝗢𝗙 𝗣𝗔𝗦𝗦𝗘𝗡𝗚𝗘𝗥 " +(l+1)+": ");
+            String Name =sc.next();
+            System.out.println("𝗖𝗛𝗢𝗢𝗦𝗘 𝗔 𝗦𝗘𝗔𝗧 𝗧𝗢 𝗕𝗢𝗢𝗞");
+            int k = sc.nextInt();
+            if(k<=n && k>0)
+            {                                       	 
+           	    if(allot[k-1]==0)
+           	    {
+           	    	name[l] = Name;
+           	        allot[k-1]=1;
+                    System.out.println(" Successfully seat booked!! ");
+                    System.out.println("𝗘𝗡𝗧𝗘𝗥 𝗧𝗛𝗘 𝗔𝗥𝗥𝗜𝗩𝗔𝗟 𝗧𝗜𝗠𝗘 𝗢𝗙 𝗣𝗔𝗦𝗦𝗘𝗡𝗚𝗘𝗥 " +(l+1)+": ");
+                    arrival_time[l] = sc.nextInt();
+                    System.out.println("𝗘𝗡𝗧𝗘𝗥 𝗧𝗛𝗘 𝗧𝗜𝗠𝗘 𝗧𝗔𝗞𝗘𝗡 𝗕𝗬 𝗣𝗔𝗦𝗦𝗘𝗡𝗚𝗘𝗥 " +(l+1)+": ");
+                    burst_time[l] = sc.nextInt();           
+                    process[l]=l+1;
+                    if((l+1)!=n)
+                    {
+                        System.out.println("IS ANY PASSENGER THERE?:    1. YES,  2. NO");int pr = sc.nextInt();
+                        if(pr == 1)
+                        {
+                            p[0] = n;
+                        }
+                        else if(pr ==2)
+                        {
+                        	n=l+1;p[0] = n;
+                        }
+                    }
+                    ++l;                
+           	    }
+           	    else
+           	        System.out.println("Aldready booked. Please book from the below given vacant seats");
+            }
+            else
+           	   System.out.println("Please book from the below given vacant seats");   
+            }
+        }
+    
+    public void findavgTime_fcfs(int n, String name[], int bt[], int at[])
+    { 
+    	int ct[] = new int[n];
+    	System.out.println(" Total seats have been booked successfully...\n");
+    	System.out.println("------------------------------------------------------------------------------------------------------------");
+        int wt[] = new int[n], tat[] = new int[n]; 
+        int total_wt = 0, total_tat = 0; 
+
+        findWaitingTime(n, bt, wt, at); 
+        findTurnAroundTime(n, bt, wt, tat); 
+
+        System.out.printf("            𝗣𝗔𝗦𝗦𝗘𝗡𝗚𝗘𝗥               𝗡𝗔𝗠𝗘            𝗕𝗨𝗥𝗦𝗧𝗧𝗜𝗠𝗘        𝗔𝗥𝗥𝗜𝗩𝗔𝗟𝗧𝗜𝗠𝗘            𝗖𝗢𝗠𝗣𝗟𝗘𝗧𝗜𝗢𝗡𝗧𝗜𝗠𝗘        𝗪𝗔𝗜𝗧𝗜𝗡𝗚𝗧𝗜𝗠𝗘           𝗧𝗨𝗥𝗡𝗔𝗥𝗢𝗨𝗡𝗗𝗧𝗜𝗠𝗘\n"); 
+
+        for (int i = 0; i < n; i++)
+        { 
+            total_wt = total_wt + wt[i]; 
+            total_tat = total_tat + tat[i];
+            ct[i] = tat[i] + at[i];
+            System.out.print("\n         "+(i+1)+"         "+name[i]+"           "+bt[i]+"            "+at[i]+"               "+ct[i]+"                 "+wt[i]+"                 "+tat[i]+"\n");         
+        } 
+    	System.out.println("------------------------------------------------------------------------------------------------------------");
+    	
+        System.out.printf("\n𝗔𝗩𝗘𝗥𝗔𝗚𝗘 𝗪𝗔𝗜𝗧𝗜𝗡𝗚 𝗧𝗜𝗠𝗘  = "+ (float)total_wt /(float) n+" ms"); 
+        System.out.printf("\n𝗔𝗩𝗘𝗥𝗔𝗚𝗘 𝗧𝗨𝗥𝗡 𝗔𝗥𝗢𝗨𝗡𝗗 𝗧𝗜𝗠𝗘  =  "+ (float)total_tat /(float) n+" ms"); 
+    }
+   
+    public void book_priority(int n, int p[], int process[], String name[], int burst_time[], int arrival_time[], int allot[], int priority[], Scanner sc)
+    {
+        int l = 0;
+        while(l<n)
+        {
+        	Transportservicebook3.Status_display(allot,n);
+        	
+            System.out.println("𝗘𝗡𝗧𝗘𝗥 𝗧𝗛𝗘 𝗡𝗔𝗠𝗘 𝗢𝗙 𝗣𝗔𝗦𝗦𝗘𝗡𝗚𝗘𝗥 " +(l+1)+": ");
+            String Name =sc.next();
+            System.out.println("𝗖𝗛𝗢𝗢𝗦𝗘 𝗔 𝗦𝗘𝗔𝗧 𝗧𝗢 𝗕𝗢𝗢𝗞 ");
+            int k = sc.nextInt();
+            if(k<=n && k>0)
+            {                                       	 
+           	    if(allot[k-1]==0)
+                {
+           	    	name[l] = Name;
+            	    allot[k-1]=1;
+                    System.out.println(" Successfully seat booked!!");
+                    System.out.println("𝗘𝗡𝗧𝗘𝗥 𝗧𝗛𝗘 𝗔𝗥𝗥𝗜𝗩𝗔𝗟 𝗧𝗜𝗠𝗘 𝗢𝗙 𝗣𝗔𝗦𝗦𝗘𝗡𝗚𝗘𝗥 " +(l+1)+": ");
+                    arrival_time[l] = sc.nextInt();
+                    System.out.println("𝗘𝗡𝗧𝗘𝗥 𝗧𝗛𝗘 𝗧𝗜𝗠𝗘 𝗧𝗔𝗞𝗘𝗡 𝗕𝗬 𝗣𝗔𝗦𝗦𝗘𝗡𝗚𝗘𝗥 " +(l+1)+": ");
+                    burst_time[l] = sc.nextInt();   
+                    System.out.println("𝗘𝗡𝗧𝗘𝗥 𝗧𝗛𝗘 𝗔𝗚𝗘 𝗢𝗙 𝗣𝗔𝗦𝗦𝗘𝗡𝗚𝗘𝗥 " +(l+1)+": ");
+                    priority[l] = sc.nextInt();
+                    process[l]=l+1;
+                    if((l+1)!=n)
+                    {
+                        System.out.println("IS ANY PASSENGER THERE?:    1. YES,  2. NO");
+                        int pr = sc.nextInt();
+                        if(pr == 1)
+                        {
+                            p[0] = n;
+                        }
+                        else if(pr ==2)
+                        {
+                        	n=l+1;
+                        	p[0] = n;
+                        }
+                    }
+                    ++l;
+                    
+           	   }
+           	   else
+           	       System.out.println("Aldready booked. Please book from the below given vacant seats");
+            }
+            else
+           	    System.out.println("Please book from the below given vacant seats");   
+        }
+        
+        for(int i=0;i<n-1;i++)
+        {
+            for(int j=i+1;j<n;j++)
+            {
+                if((arrival_time[i]>arrival_time[j])||(arrival_time[j] == arrival_time[i] && priority[j]>priority[i]))
+                {
+                	int x;
+                	String y;
+                    x=process[i];
+                    process[i]=process[j];
+                    process[j]=x;
+                    y = name[i];
+                    name[i]=name[j];
+                    name[j]=y; 
+                    x=arrival_time[i];
+                    arrival_time[i]=arrival_time[j];
+                    arrival_time[j]=x;
+                    x=priority[i];
+                    priority[i]=priority[j];
+                    priority[j]=x;
+                    x=burst_time[i];
+                    burst_time[i]=burst_time[j];
+                    burst_time[j]=x;
+
+                }
+            }
+        }
+    }
+    
+    public void findavgTime_priority(int n, int process[], String name[], int bt[], int priority[], int at[])
+    { 
+    	int ct[] = new int[n];
+    	System.out.println(" Total seats have been booked successfully...\n");
+    	System.out.println("-----------------------------------------------------------------------------------------------------------------------------");
+        int wt[] = new int[n], tat[] = new int[n]; 
+        int total_wt = 0, total_tat = 0; 
+
+        findWaitingTime(n, bt, wt, at); 
+        findTurnAroundTime(n, bt, wt, tat); 
+
+        System.out.printf("            𝗣𝗔𝗦𝗦𝗘𝗡𝗚𝗘𝗥           𝗡𝗔𝗠𝗘              𝗕𝗨𝗥𝗦𝗧𝗧𝗜𝗠𝗘        𝗔𝗥𝗥𝗜𝗩𝗔𝗟𝗧𝗜𝗠𝗘          𝗣𝗥𝗜𝗢𝗥𝗜𝗧𝗬𝗔𝗚𝗘           𝗖𝗢𝗠𝗣𝗟𝗘𝗧𝗜𝗢𝗡𝗧𝗜𝗠𝗘         𝗪𝗔𝗜𝗧𝗜𝗡𝗚𝗧𝗜𝗠𝗘         𝗧𝗨𝗥𝗡𝗔𝗥𝗢𝗨𝗡𝗗_𝗧𝗜𝗠𝗘\n"); 
+
+        for (int i = 0; i < n; i++)
+        { 
+            total_wt = total_wt + wt[i]; 
+            total_tat = total_tat + tat[i];
+            ct[i] = tat[i] + at[i];
+            System.out.print("\n         "+process[i]+"         "+name[i]+"           "+bt[i]+"            "+at[i]+"              "+priority[i]+"              "+ct[i]+"               "+wt[i]+"                 "+tat[i]+"\n");         
+        } 
+    	System.out.println("-----------------------------------------------------------------------------------------------------------------------------");
+
+        System.out.printf("\n𝗔𝗩𝗘𝗥𝗔𝗚𝗘 𝗪𝗔𝗜𝗧𝗜𝗡𝗚 𝗧𝗜𝗠𝗘  = "+ (float)total_wt /(float) n+" ms"); 
+        System.out.printf("\n𝗔𝗩𝗘𝗥𝗔𝗚𝗘 𝗧𝗨𝗥𝗡 𝗔𝗥𝗢𝗨𝗡𝗗 𝗧𝗜𝗠𝗘  =  "+ (float)total_tat /(float) n+" ms"); 
+    } 
+    
+    public static void Status_display(int a[], int n)
+    {
+   	    System.out.println();
+        System.out.println("     𝗦𝗲𝗮𝘁 𝗻𝗼.        𝗦𝘁𝗮𝘁𝘂𝘀");
+        for (int i=0;i<n;i++)
+        {
+            System.out.println("    "+(i+1)+"             "+a[i]);
+        }
+        System.out.println();
+    }
+    
+    public void findWaitingTime(int n, int bt[], int wt[], int at[])
+    { 
+        int service_time[] = new int[n]; 
+        service_time[0] = 0; 
+        wt[0] = 0; 
+     
+        for (int i = 1; i < n ; i++) 
+        { 
+        	service_time[i] = service_time[i-1] + bt[i-1]; 
+            wt[i] = service_time[i] - at[i]; 
+        } 
+    } 
+    
+    public void findTurnAroundTime(int n, int bt[], int wt[], int tat[]) 
+    { 
+        for (int i = 0; i < n; i++)
+        { 
+            tat[i] = bt[i] + wt[i]; 
+        } 
+    } 
+
+}
+
+public class try_dAV{
+public static void main(String args[]) 
+{ 
+
+    System.out.println(' '); 
+    Scanner sc=new Scanner(System.in);
+    int i,n,p[];
+    int z=0,z1=0,z2=0;
+    int select[];
+    int process[];
+    int arrival_time[];
+    int burst_time[];
+    int priority[];
+    int allot[];
+    String name[];
+
+    
+    while(z!=3)
+    {   System.out.println();
+        System.out.println("\n********* 𝐓𝐘𝐑𝐀𝐍𝐓 𝐑𝐄𝐒𝐄𝐑𝐕𝐀𝐓𝐈𝐎𝐍 𝐒𝐘𝐒𝐓𝐄𝐌 *********");
+        System.out.println();
+        System.out.println(" 𝟏.𝐅𝐂𝐅𝐒 𝐓𝐈𝐂𝐊𝐄𝐓 𝐁𝐎𝐎𝐊𝐈𝐍𝐆, \n 𝟐.𝐏𝐑𝐈𝐎𝐑𝐈𝐓𝐘 𝐓𝐈𝐂𝐊𝐄𝐓 𝐁𝐎𝐎𝐊𝐈𝐍𝐆, \n 𝟑.𝐄𝐗𝐈𝐓 ");
+        int ch=sc.nextInt();
+        
+        switch(ch)
+        { 
+            case 1: while(z1!=4)
+                    {
+            	        System.out.println("   \t \t           𝟏. 𝐀𝐈𝐑𝐋𝐈𝐍𝐄  𝐑𝐄𝐒𝐄𝐑𝐕𝐀𝐓𝐈𝐎𝐍\n   \t \t           𝟐. 𝐑𝐀𝐈𝐋𝐖𝐀𝐘  𝐑𝐄𝐒𝐄𝐑𝐕𝐀𝐓𝐈𝐎𝐍");
+                        int ch1=sc.nextInt(); 
+                        System.out.println();
+                        switch(ch1)
+                        {
+                            case 1:  System.out.println("---------------------------------------------------𝐀𝐈𝐑𝐋𝐈𝐍𝐄  𝐑𝐄𝐒𝐄𝐑𝐕𝐀𝐓𝐈𝐎𝐍");
+                                     System.out.println(" *𝗧𝗜𝗖𝗞𝗘𝗧 𝗖𝗢𝗦𝗧𝗦 𝗥𝗣𝗦 𝟮𝟱𝟬𝟬/- 𝗣𝗘𝗥 𝗛𝗘𝗔𝗗*");
+                                     System.out.print("present available seats : "); 
+                                     n = sc.nextInt();
+                                     System.out.println("---------------------------------------------------");
+                                     int totalSeats=n;                             
+                                     Transportservicebook3 tick=new Transportservicebook3(totalSeats);
+                                     p = new int[1];
+                                     process = new int[n];
+                                     name = new String[n];
+                                     arrival_time = new int[n];
+                                     burst_time = new int[n];
+                                     allot = new int[n];
+                                     
+                                     tick.book_fcfs(n,p,process,name,burst_time,arrival_time,allot,sc);                                
+                                     tick.findavgTime_fcfs(p[0],name, burst_time, arrival_time);z1=4;break;
+                                     
+                            case 2:  System.out.println("--------------------------------------------------- 𝐑𝐀𝐈𝐋𝐖𝐀𝐘  𝐑𝐄𝐒𝐄𝐑𝐕𝐀𝐓𝐈𝐎𝐍");
+                                     System.out.println(" *𝗧𝗜𝗖𝗞𝗘𝗧 𝗖𝗢𝗦𝗧𝗦 𝗥𝗣𝗦 𝟲𝟱𝟬/- 𝗣𝗘𝗥 𝗛𝗘𝗔𝗗*");
+                                     System.out.print("present available seats : "); 
+                                     n = sc.nextInt();
+                                     System.out.println("---------------------------------------------------");
+                                     int totalSeats1=n;                             
+                                     Transportservicebook3 tick1=new Transportservicebook3(totalSeats1);
+                                     p = new int[1];
+                                     process = new int[n];
+                                     name = new String[n];
+                                     arrival_time = new int[n];
+                                     burst_time = new int[n];
+                                     allot = new int[n];
+                                     
+                                     tick1.book_fcfs(n,p,process,name,burst_time,arrival_time, allot,sc);                                
+                                     tick1.findavgTime_fcfs(p[0],name, burst_time, arrival_time);z1=4;break;
+                            
+                            default: System.out.println("Choose from the given options!!");break;
+                        }
+                    }break;
+
+            case 2: while(z2!=4)
+                   {
+    	               System.out.println("   \t \t           𝟏. 𝐀𝐈𝐑𝐋𝐈𝐍𝐄  𝐑𝐄𝐒𝐄𝐑𝐕𝐀𝐓𝐈𝐎𝐍\n   \t \t           𝟐. 𝐑𝐀𝐈𝐋𝐖𝐀𝐘  𝐑𝐄𝐒𝐄𝐑𝐕𝐀𝐓𝐈𝐎𝐍");
+            	       int ch1=sc.nextInt(); 
+                       System.out.println();
+                       switch(ch1)
+                       {
+                           case 1:  System.out.println("---------------------------------------------------𝐀𝐈𝐑𝐋𝐈𝐍𝐄  𝐑𝐄𝐒𝐄𝐑𝐕𝐀𝐓𝐈𝐎𝐍");
+                                    System.out.println(" *𝗧𝗜𝗖𝗞𝗘𝗧 𝗖𝗢𝗦𝗧𝗦 𝗥𝗣𝗦 𝟮𝟱𝟬𝟬/- 𝗣𝗘𝗥 𝗛𝗘𝗔𝗗*");
+                                    System.out.print("present available seats : "); 
+                                    n = sc.nextInt();
+                                    System.out.println("---------------------------------------------------");
+                                    int totalSeats=n;                             
+                                    Transportservicebook3 tick=new Transportservicebook3(totalSeats);
+                                    p = new int[1];
+                                    process = new int[n];
+                                    name = new String[n];
+                                    arrival_time = new int[n];
+                                    burst_time = new int[n];
+                                    priority = new int[n];
+                                    allot = new int[n];
+                             
+                                    tick.book_priority(n,p,process,name,burst_time,arrival_time,allot,priority,sc);                               
+                                    tick.findavgTime_priority(p[0],process,name, burst_time,priority,arrival_time);z2=4;break;
+                             
+                           case 2:  System.out.println("---------------------------------------------------𝐑𝐀𝐈𝐋𝐖𝐀𝐘  𝐑𝐄𝐒𝐄𝐑𝐕𝐀𝐓𝐈𝐎𝐍");
+                                    System.out.println(" *𝗧𝗜𝗖𝗞𝗘𝗧 𝗖𝗢𝗦𝗧𝗦 𝗥𝗣𝗦 𝟲𝟱𝟬/- 𝗣𝗘𝗥 𝗛𝗘𝗔𝗗*");
+                                    System.out.print(" present available seats  : ");
+                                    n = sc.nextInt();
+                                    System.out.println("---------------------------------------------------");
+                                    int totalSeats1=n;                             
+                                    Transportservicebook3 tick1=new Transportservicebook3(totalSeats1);
+                                    p = new int[1];
+                                    process = new int[n];
+                                    name = new String[n];
+                                    arrival_time = new int[n];
+                                    burst_time = new int[n];
+                                    priority = new int[n];
+                                    allot = new int[n];
+                             
+                                    tick1.book_priority(n,p,process,name,burst_time,arrival_time,allot,priority,sc);                                
+                                    tick1.findavgTime_priority(p[0],process,name, burst_time,priority,arrival_time);z2=4;break;
+                    
+                           default: System.out.println("Choose from the given options!!");break;
+                }
+            }break;
+                    
+            case 3:  System.out.println("Exitting...");z=3;break;
+        }
+    }
+}
+}
